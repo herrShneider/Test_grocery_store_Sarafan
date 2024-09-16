@@ -6,12 +6,13 @@
 ```
 Terms of Reference
 ```
-Решение задачи №1 находиться в файле:
+Решение задачи №1 находится в файле:
 ```
 Task_1_solution.py
 ```
 
-Стэк: Python 3.9.10 / Django 3.2.16 / DRF 3.12.4 / Djoser 2.1.0
+
+# Стэк: Python 3.9.10 / Django 3.2.16 / DRF 3.12.4 / Djoser 2.1.0
 
 
 Установка:
@@ -56,9 +57,6 @@ pip install -r requirements.txt
 ```
 python manage.py runserver
 ```
-
-
-http://127.0.0.1:8000/admin/
 
 Примеры запросов к API:
 Получение списка всех категорий с подкатегориями:
@@ -224,6 +222,11 @@ http://127.0.0.1:8000/api/auth/users/
 http://127.0.0.1:8000/api/auth/token/login/
 http://127.0.0.1:8000/api/auth/token/logout/
 ```
+Админка доступна по:
+```
+http://127.0.0.1:8000/admin/
+```
+
 
 Авторы: 
 
