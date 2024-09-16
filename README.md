@@ -12,7 +12,7 @@ Task_1_solution.py
 ```
 
 
-# Стэк: Python 3.9.10 / Django 3.2.16 / DRF 3.12.4 / Djoser 2.1.0
+## Стэк: Python 3.9.10 / Django 3.2.16 / DRF 3.12.4 / Djoser 2.1.0
 
 
 Установка:
