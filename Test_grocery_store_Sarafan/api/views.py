@@ -1,13 +1,13 @@
-from django.shortcuts import render
-from rest_framework import generics, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from groceries.models import Category, Product, ShoppingCartItem, Subcategory
-from .serializers import (CategorySerializer, ProductSerializer,
-                          ShoppingCartItemSerializer, ShoppingCartReadSerializer)
+from api.serializers import (CategorySerializer, ProductSerializer,
+                             ShoppingCartItemSerializer,
+                             ShoppingCartReadSerializer)
+from groceries.models import Category, Product, ShoppingCartItem
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -41,7 +41,10 @@ class ProductViewSet(viewsets.ModelViewSet):
             'product': pk,
             'amount': amount
         }
-        serializer = ShoppingCartItemSerializer(data=data, context={'request': request})
+        serializer = ShoppingCartItemSerializer(
+            data=data,
+            context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
 
         shopping_cart_item = ShoppingCartItem.objects.filter(
@@ -52,7 +55,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         if shopping_cart_item:
             shopping_cart_item.amount += int(amount)
             shopping_cart_item.save()
-            updated_serializer = ShoppingCartItemSerializer(shopping_cart_item, context={'request': request})
+            updated_serializer = ShoppingCartItemSerializer(
+                shopping_cart_item,
+                context={'request': request}
+            )
             return Response(updated_serializer.data, status=status.HTTP_200_OK)
 
         serializer.save()
@@ -74,18 +80,18 @@ class ShoppingCartAPIView(APIView):
     """
     Эндпоинт для получения состава и очистки карзины.
     """
+
     serializer_class = ShoppingCartReadSerializer
 
     def get_queryset(self):
-        # Возвращаем товары только для текущего пользователя
+        """
+        Возвращает qureset товаров в корзине текущего пользователя.
+        """
         return ShoppingCartItem.objects.filter(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-
-        # Передаем список объектов ShoppingCartItem в сериализатор
         serializer = self.serializer_class(queryset, many=True)
-
         return Response(
             {
                 'products': serializer.data,
@@ -95,10 +101,15 @@ class ShoppingCartAPIView(APIView):
         )
 
     def get_total_cost(self, queryset):
-        # Подсчет общей стоимости
+        """
+        Возвращает суммарную стоимость товаров в корзине.
+        """
         return sum(item.product.price * item.amount for item in queryset)
 
     def delete(self, request):
+        """
+        Очищает корзину текущего пользователя.
+        """
         self.get_queryset().delete()
         return Response(
             {

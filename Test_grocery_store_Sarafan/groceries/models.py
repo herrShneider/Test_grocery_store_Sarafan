@@ -1,15 +1,15 @@
-from PIL import Image
 from io import BytesIO
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from PIL import Image
 
 from config import (AMOUNT_MAX_VALUE, AMOUNT_MIN_VALUE,
                     DECIMALFIELD_DECIMAL_PLACES, DECIMALFIELD_MAX_DIGITS,
-                    IMAGE_SIZES,
-                    NAME_MAX_LENGTH, SLICE_STR_METHOD_LIMIT, SLUG_MAX_LENGTH)
+                    IMAGE_SIZES, NAME_MAX_LENGTH, SLICE_STR_METHOD_LIMIT,
+                    SLUG_MAX_LENGTH)
 from groceries.validators import validate_image_exists
 
 User = get_user_model()
@@ -84,14 +84,11 @@ class Product(CategorySubcategoryProductBase):
     Модель для представления продуктов.
     """
 
-    # Поле для загрузки исходного изображения
     image_original = models.ImageField(
         verbose_name='Оригинальное изображение',
         upload_to='products/images/original/',
         validators=(validate_image_exists,)
     )
-
-    # Автоматически генерируемые изображения разных размеров
     image_small = models.ImageField(
         verbose_name='Изображение (маленькое)',
         upload_to='products/images/small/',
@@ -133,10 +130,14 @@ class Product(CategorySubcategoryProductBase):
         """
         super().save(*args, **kwargs)
 
-        # Создаем и сохраняем изображения в разных размерах
         if self.image_original:
             for size_name, (width, height) in IMAGE_SIZES.items():
-                self._resize_image(self.image_original, width, height, size_name)
+                self._resize_image(
+                    self.image_original,
+                    width,
+                    height,
+                    size_name
+                )
 
     def _resize_image(self, image, width, height, size_name):
         """

@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from . import views
+from api import views
 
 app_name = 'api'
 
@@ -17,11 +17,6 @@ router_v1.register(
     views.ProductViewSet,
     basename='products'
 )
-# router_v1.register(
-#     r'shopping_cart',
-#     views.ShoppingCartAPIView,
-#     basename='shopping_cart'
-# )
 
 urlpatterns = [
     path('', include(router_v1.urls)),
